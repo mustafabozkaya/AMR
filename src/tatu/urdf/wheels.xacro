@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="wheel_link_origin" value="0.135 -0.018 -0.013" />
+    <xacro:property name="wheel_mass" value="2.687" />
+    <xacro:property name="wheel_Ixx" value="0.009" />
+    <xacro:property name="wheel_Ixy" value="0.0" />
+    <xacro:property name="wheel_Ixz" value="${2.884 * 0.00000001}" />
+    <xacro:property name="wheel_Iyx" value="0.0" />
+    <xacro:property name="wheel_Iyy" value="0.005" />
+    <xacro:property name="wheel_Iyz" value="0.0" />
+    <xacro:property name="wheel_Izx" value="${2.884 * 0.00000001}" />
+    <xacro:property name="wheel_Izy" value="0.0" />
+    <xacro:property name="wheel_Izz" value="0.005" />
+
+    <joint name="fl_wheel_joint" type="continuous">
+        <origin xyz="0.3175 0.27025 -0.13975" rpy="0 0 -1.57" />
+        <parent link="base_link" />
+        <child link="fl_wheel_link" />
+        <axis xyz="-1 0 0" />
+        <limit effort="100" velocity="20.0" />
+    </joint>
+    <joint name="fr_wheel_joint" type="continuous">
+        <origin xyz="0.3175 -0.26425 -0.13975" rpy="0 0 1.57" />
+        <parent link="base_link" />
+        <child link="fr_wheel_link" />
+        <axis xyz="1 0 0" />
+        <limit effort="100" velocity="20.0" />
+    </joint>
+    <joint name="rl_wheel_joint" type="continuous">
+        <origin xyz="-0.3325 0.27025 -0.13975" rpy="0 0 -1.57" />
+        <parent link="base_link" />
+        <child link="rl_wheel_link" />
+        <axis xyz="1 0 0" />
+        <limit effort="100" velocity="20.0" />
+    </joint>
+    <joint name="rr_wheel_joint" type="continuous">
+        <origin xyz="-0.3325 -0.26425 -0.13975" rpy="0 0 1.57" />
+        <parent link="base_link" />
+        <child link="rr_wheel_link" />
+        <axis xyz="1 0 0" />
+        <limit effort="100" velocity="20.0" />
+    </joint>
+
+    <xacro:macro name="wheel_link" params="location">
+        <link name="${location}_wheel_link">
+            <visual>
+                <origin xyz="${wheel_link_origin}" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="package://tatu/mesh/Motor.stl" />
+                </geometry>
+                <material name="Blue">
+                    <color rgba="0.25 0.25 0.25 1" />
+                </material>
+            </visual>
+            <collision>
+                <origin xyz="${wheel_link_origin}" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="package://tatu/mesh/Motor.stl" />
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <mass value="${wheel_mass}" />
+                <inertia ixx="${wheel_Ixx}" ixy="${wheel_Ixy}" ixz="${wheel_Ixz}" iyx="${wheel_Iyx}" iyy="${wheel_Iyy}" iyz="${wheel_Iyz}" izx="${wheel_Izx}" izy="${wheel_Izy}" izz="${wheel_Izz}" />
+            </inertial>
+        </link>
+
+        <gazebo reference="${location}_wheel_link">
+            <material>Gazebo/DarkGrey</material>
+            <mu1 value="1" />
+            <mu2 value="1" />
+            <kp value="10000000.0" />
+            <kd value="1.0" />
+            <minDepth>0.01</minDepth>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:macro name="all_wheel_links">
+        <xacro:wheel_link location="fl" />
+        <xacro:wheel_link location="fr" />
+        <xacro:wheel_link location="rl" />
+        <xacro:wheel_link location="rr" />
+    </xacro:macro>
+
+    <xacro:all_wheel_links />
+
+</robot>

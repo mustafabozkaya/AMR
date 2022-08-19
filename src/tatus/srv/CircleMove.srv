@@ -1,0 +1,7 @@
+
+string qrcode
+int64 leftencoder
+int64 rightencoder
+---
+float32 speed
+bool success

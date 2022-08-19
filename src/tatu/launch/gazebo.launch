@@ -1,0 +1,8 @@
+<launch>
+  <include file="$(find tatu)/gazebo/empty_world.launch" />
+
+  <node name="gazebo_arac_ekle_dugumu" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-urdf -x 0 -y 0 -z 0 -R 0 -P 0 -Y 0 -model tatu -param robot_description" />
+
+  <node name="add_floor_plan" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" args="-file '$(find tatu)/gazebo/floor_plan/model.sdf' -sdf -x 0 -y 0 -z -2.0 -R 0 -P 0 -Y 0 -model 'floor_plan'" />
+
+</launch>

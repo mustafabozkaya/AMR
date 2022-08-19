@@ -1,0 +1,10 @@
+<launch>
+  <param name="robot_description" command="xacro '$(find tatu)/urdf/main.xacro'" />
+
+  <include file="$(find tatu)/launch/load_map.launch" />
+  <include file="$(find tatu)/launch/controllers_load.launch" />
+  <include file="$(find tatu)/launch/amcl.launch" />
+  <include file="$(find tatu)/launch/rviz.launch" />
+  <include file="$(find tatu)/launch/gazebo.launch" />
+
+</launch>

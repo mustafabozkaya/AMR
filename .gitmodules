@@ -1,0 +1,3 @@
+[submodule "src/VirtualMap/EditMap"]
+	path = src/VirtualMap/EditMap
+	url = https://github.com/mustafabozkaya/editMap.git

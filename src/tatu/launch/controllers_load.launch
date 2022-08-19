@@ -1,0 +1,12 @@
+<launch>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen">
+    <param name="rate" value="50" />
+  </node>
+
+  <rosparam file="$(find tatu)/params/joint_state_controller.yaml" command="load" />
+  <!-- <rosparam file="$(find tatu)/params/gazebo_ros_control.yaml" command="load" /> -->
+  <!-- <node name="joint_state_publisher_gui" pkg="joint_state_publisher_gui" type="joint_state_publisher_gui" /> -->
+  <node name="controller_manager" pkg="controller_manager" type="spawner" respawn="true" output="screen" args="joint_state_controller" />
+
+</launch>

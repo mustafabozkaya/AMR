@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+
+    <arg name="map_img" default="$(find virtualmap)/maps/maze.png" />
+
+    <node name="virtualmap_server" pkg="virtualmap" type="draw_map.py" output="screen" args="$(arg map_img)" />
+    <node name="virtualmap_client" pkg="virtualmap" type="virtualmap_client.py" output="screen" />
+
+</launch>

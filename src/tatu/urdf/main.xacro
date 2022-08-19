@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="tatu">
+
+	<xacro:include filename="$(find tatu)/urdf/gazebo.xacro" />
+	<xacro:include filename="$(find tatu)/urdf/base_footprint.xacro" />
+	<xacro:include filename="$(find tatu)/urdf/base.xacro" />
+	<xacro:include filename="$(find tatu)/urdf/wheels.xacro" />
+	<xacro:include filename="$(find tatu)/urdf/gazebo.xacro" />
+	<xacro:include filename="$(find tatu)/urdf/lidar.xacro" />
+
+</robot>
