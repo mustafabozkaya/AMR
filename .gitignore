@@ -1,0 +1,7 @@
+.catkin_workspace
+.qt_for_python/
+.vscode/
+build/
+devel/
+install/
+src3.zip

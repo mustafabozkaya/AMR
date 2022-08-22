@@ -1,3 +1,33 @@
 [submodule "src/VirtualMap/EditMap"]
 	path = src/VirtualMap/EditMap
 	url = https://github.com/mustafabozkaya/editMap.git
+	branch = main
+[submodule "src/diffbot"]
+	path = src/diffbot
+	url =https://github.com/fjp/diffbot.git
+
+[submodule "src/find-object"]
+	path = src/find-object
+	url =https://github.com/introlab/find-object.git
+
+[submodule "src/remo_description"]
+	path = src/remo_description
+	url =url: https://github.com/ros-mobile-robots/remo_description.git
+	branch = main
+[submodule "src/raspicam_node"]	
+	path = src/raspicam_node
+    url = https://github.com/UbiquityRobotics/raspicam_node.git
+    branch = noetic-devel
+
+[submodule "src/rplidar_ros"]
+	path = src/rplidar_ros
+	url =https://github.com/robopeak/rplidar_ros.git
+	branch = master
+
+[submodule "src/rosbot_description"]
+	path = src/rosbot_description
+	url =https://github.com/husarion/rosbot_description.git
+
+[submodule "src/rosserial"]
+	path = src/rosserial
+	url =https://github.com/ros-drivers/rosserial.git
