@@ -172,7 +172,6 @@ include_directories(
  catkin_install_python(PROGRAMS
    scripts/line_tracker.py
    scripts/mecanums_controller.py
-   scripts/lift_buzzer_service.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

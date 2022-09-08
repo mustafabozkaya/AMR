@@ -32,7 +32,6 @@ class DurationService():
         duration=request.target/self.speed
 
         self.response.duration=duration
-        self.response.success=True
         return self.response
 
 

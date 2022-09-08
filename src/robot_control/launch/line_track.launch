@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- for launch line tracking file -->
+    <node pkg="robot_control" type="line_track.py" name="line_track_node" output="screen" />
+</launch>

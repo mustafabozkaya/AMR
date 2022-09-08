@@ -5,20 +5,19 @@ line tracking
 """
 
 import cv2
-from matplotlib import image
 import numpy as np
 import rospy
 from geometry_msgs.msg import Twist
 import sys
-from read_camera import *
+from robot_control import read_camera
 import time
-from utils_packg import *
+from robot_control import utils_packg
 import math
+import os
 
 
 class LineTrackCamera():
     def __init__(self):
-        rospy.init_node("line_track_camera")
 
         self.pub = rospy.Publisher(
             "/cmd_vel", Twist, queue_size=10)
@@ -30,7 +29,7 @@ class LineTrackCamera():
         cv2.namedWindow("HSV trackbar")
         cv2.createTrackbar("low_h", "HSV trackbar", 0, 179, self.nothing)
         cv2.createTrackbar("low_s", "HSV trackbar", 0, 255, self.nothing)
-        cv2.createTrackbar("low_v", "HSV trackbar", 130, 255, self.nothing)
+        cv2.createTrackbar("low_v", "HSV trackbar", 35, 255, self.nothing)
         cv2.createTrackbar("high_h", "HSV trackbar", 179, 179, self.nothing)
         cv2.createTrackbar("high_s", "HSV trackbar", 255, 255, self.nothing)
         cv2.createTrackbar("high_v", "HSV trackbar", 255, 255, self.nothing)
@@ -58,8 +57,8 @@ class LineTrackCamera():
         crop_height = int(img_resized.shape[0] * 0.40)
         corp_img = img_resized[crop_height-50:,
                                crop_witdth:img_resized.shape[1] - crop_witdth]
-        self.line_track4(low_h, low_s, low_v, high_h,
-                         high_s, high_v, img_resized)
+        self.line_track(low_h, low_s, low_v, high_h,
+                        high_s, high_v, img_resized)
 
     def line_track(self, low_h, low_s, low_v, high_h, high_s, high_v, img_resized):
 
@@ -105,8 +104,6 @@ class LineTrackCamera():
         if len(contours) > 0:
             # find the largest contour in the mask
             c = max(contours, key=cv2.contourArea)
-            # get the bounding rectangle of the largest contour
-            x, y, w, h = cv2.boundingRect(c)
 
             rect = cv2.minAreaRect(c)  # get the minimum area rectangle
 
@@ -211,10 +208,11 @@ class LineTrackCamera():
                 cv2.putText(result_bitwise, "Error: {:.2f}cm".format(
                     error), (w//4, h//4+40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                 print(error)  # print the distance
-                self.cmd_vel.linear.x = 0.4 * linear_corefficient
+                self.cmd_vel.linear.x = 1 * linear_corefficient
                 # set the angular velocity to the distance divided by 100
-                self.cmd_vel.angular.z = -error/100*angular_corefficient
+                self.cmd_vel.angular.z = -error/600*angular_corefficient
                 self.pub.publish(self.cmd_vel)
+
             else:
                 pass
                 self.cmd_vel.linear.x = 0.0
@@ -227,7 +225,7 @@ class LineTrackCamera():
             img_list = ([img_resized, hsv, mask_inverse, mask_dilate], [
                         mask_erode, mask_blur, cannyedges, result_bitwise])
 
-            stack_img = stackImageslabels(img_list, img_labels, 0.6)
+            stack_img = stackImageslabels(img_list, img_labels, 1)
             cv2.imshow("stack", stack_img)
             cv2.waitKey(1)  # wait for 1 ms before moving to the next frame
 
@@ -324,7 +322,7 @@ class LineTrackCamera():
         # convert the image to hsv format(hue,saturation,value)
         hsv = cv2.cvtColor(img_resized, cv2.COLOR_BGR2HSV)
         # rotate the image to make the color detection easier
-        # rotate_img = cv2.rotate(img_resized, cv2.ROTATE_180)
+        #rotate_img=cv2.rotate(img_resized, cv2.ROTATE_180)
         # lower hsv values for the color,hue is the color,saturation is the intensity of the color,value is the brightness of the color
         lower = np.array([low_h, low_s, low_v])
         # upper hsv values for the color,hue is the color,saturation is the intensity of the color,value is the brightness of the color
@@ -671,9 +669,9 @@ class LineTrackCamera():
                 cv2.putText(result_bitwise, "Error: {:.2f}cm".format(
                     error), (w//4, h//4+40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                 print(error)  # print the distance
-                self.cmd_vel.linear.x = 0.4 * linear_corefficient
+                self.cmd_vel.linear.x = 1 * linear_corefficient
                 # set the angular velocity to the distance divided by 100
-                self.cmd_vel.angular.z = -error/100*angular_corefficient
+                self.cmd_vel.angular.z = -error/600*angular_corefficient
                 self.pub.publish(self.cmd_vel)
             else:
                 pass
@@ -692,24 +690,35 @@ class LineTrackCamera():
             cv2.waitKey(1)  # wait for 1 ms before moving to the next frame
 
 
-if __name__ == '__main__':
+def main(linetrackobject):
     try:
-        line_track_camera = LineTrackCamera()
+        args = sys.argv  # get the arguments
+        if len(args) == 2:  # if the number of arguments is 2
+            port = args[1]  # get the port
+
+        else:
+            print("No port provided. Using default port /dev/video0")
+            port = "/dev/video0"
+
+        # get permsision to use the port
+        # change the permissions of the port to 666 (read and write)
+        os.system("cd / && sudo chmod 666 " + port)
+        # create a new object of the class
+
         # cap= cv2.VideoCapture(0) # open the camera
-        cap = cv2.VideoCapture('./video_2022-08-01_10-57-00.mp4')
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+        cap = cv2.VideoCapture(port)  # open the camera
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)  # set the width of the camera
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)  # set the height of the camera
 
         while(cap.isOpened()):
             ret, frame = cap.read()
 
             if ret == True:
 
-                line_track_camera.processimg(frame)
+                linetrackobject.processimg(frame)
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
-            else:
-                break
+
             time.sleep(0.1)
         cap.release()
         cv2.destroyAllWindows()
@@ -718,3 +727,9 @@ if __name__ == '__main__':
         rospy.loginfo(e)
         rospy.loginfo("LineTrackCamera node terminated.")
         sys.exit()
+
+
+if __name__ == '__main__':
+    rospy.init_node("line_track_node")
+    line_track = LineTrackCamera()
+    main(line_track)
